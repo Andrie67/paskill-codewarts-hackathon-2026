@@ -1,98 +1,138 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { Colors, Spacing, Border } from '../../constants/theme';
+import { ConfidenceScore } from '../../components/ConfidenceScore';
+import { JobCard } from '../../components/JobCard';
+import { Card } from '../../components/Card';
+import { ProgressBar } from '../../components/ProgressBar';
+import { useRouter } from 'expo-router';
+import { ChevronRight } from 'lucide-react-native';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+export default function HomeDashboard() {
+  const router = useRouter();
 
-export default function HomeScreen() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <ScrollView style={styles.container} contentContainerStyle={styles.scroll}>
+      <View style={styles.header}>
+        <Text style={styles.greeting}>Good morning, Juan!</Text>
+        <Text style={styles.subtitle}>Here is your passport status.</Text>
+      </View>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      {/* Profile Strength Widget */}
+      <Card style={styles.strengthCard} padding="md" shadow="sm">
+        <View style={styles.strengthHeader}>
+          <Text style={styles.strengthTitle}>Profile Strength</Text>
+          <Text style={styles.strengthValue}>80%</Text>
+        </View>
+        <ProgressBar progress={80} color={Colors.accent} backgroundColor="#FEF3C7" />
+        <View style={styles.strengthAction}>
+          <Text style={styles.strengthSub}>Complete your passport to increase visibility</Text>
+          <ChevronRight size={16} color={Colors.textSecondary} />
+        </View>
+      </Card>
+
+      <View style={styles.section}>
+        <ConfidenceScore score={82} />
+      </View>
+
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Suggested Jobs</Text>
+          <Text style={styles.seeAll} onPress={() => router.push('/(tabs)/jobs')}>See All</Text>
+        </View>
+
+        <JobCard 
+          title="Senior Welder"
+          employer="ABC Construction Corp."
+          location="Makati, Metro Manila"
+          salary="₱800 - ₱1000 / day"
+          type="Full-time"
+          match={95}
+          isRecommended
+        />
+        <JobCard 
+          title="Site Carpenter"
+          employer="BuildRight Inc."
+          location="Quezon City"
+          salary="₱750 / day"
+          type="Project-based"
+          match={82}
+        />
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  container: {
+    flex: 1,
+    backgroundColor: Colors.background,
+  },
+  scroll: {
+    padding: Spacing.lg,
+    paddingBottom: 100, // padding for absolute tab bar
+  },
+  header: {
+    marginBottom: Spacing.lg,
+  },
+  greeting: {
+    fontSize: 24,
+    fontWeight: '800',
+    color: Colors.text,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: Colors.textSecondary,
+    marginTop: 4,
+  },
+  strengthCard: {
+    marginBottom: Spacing.xl,
+    backgroundColor: '#FFFBEB', // Light amber background
+    borderColor: '#FDE68A',
+  },
+  strengthHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: Spacing.sm,
+  },
+  strengthTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: Colors.text,
+  },
+  strengthValue: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: Colors.accent,
+  },
+  strengthAction: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    justifyContent: 'space-between',
+    marginTop: Spacing.sm,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  strengthSub: {
+    fontSize: 12,
+    color: Colors.textSecondary,
+    fontWeight: '500',
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  section: {
+    marginBottom: Spacing.xl,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: Spacing.md,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: Colors.text,
+  },
+  seeAll: {
+    fontSize: 14,
+    color: Colors.primary,
+    fontWeight: '600',
   },
 });
